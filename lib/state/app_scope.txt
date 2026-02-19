@@ -1,0 +1,60 @@
+import 'package:flutter/material.dart';
+import '../models/transaction.dart';
+import '../models/insight.dart';
+
+class AppState extends ChangeNotifier {
+  double totalBalance = 12000;
+  double incomeThisMonth = 18000;
+  double expenseThisMonth = 6000;
+  String currency = 'THB';
+
+  String botMessage = 'คุณใช้จ่ายน้อยลงกว่าที่แล้ว เยี่ยมมาก!';
+
+  final List<Transaction> _transactions = [
+    Transaction(
+      id: '1',
+      title: 'เงินเดือน',
+      category: 'รายรับ',
+      amount: 20000,
+      isIncome: true,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: '2',
+      title: 'อาหาร',
+      category: 'อาหาร',
+      amount: 500,
+      isIncome: false,
+      date: DateTime.now(),
+    ),
+  ];
+
+  List<Transaction> get recentTransactions => _transactions;
+
+  Map<String, List<Transaction>> get groupedTransactions {
+    final map = <String, List<Transaction>>{};
+    for (final tx in _transactions) {
+      final key = '${tx.date.day}/${tx.date.month}/${tx.date.year}';
+      map.putIfAbsent(key, () => []).add(tx);
+    }
+    return map;
+  }
+
+  void deleteTransaction(String id) {
+    _transactions.removeWhere((e) => e.id == id);
+    notifyListeners();
+  }
+
+  final List<Insight> insights = [
+    Insight(
+      title: 'การใช้จ่าย',
+      message: 'คุณใช้จ่ายลดลง 20% จากเดือนที่แล้ว',
+      level: InsightLevel.info,
+    ),
+    Insight(
+      title: 'อาหาร',
+      message: 'ค่าอาหารสูงกว่าค่าเฉลี่ย',
+      level: InsightLevel.warning,
+    ),
+  ];
+}

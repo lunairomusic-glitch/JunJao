@@ -1,0 +1,22 @@
+import 'package:flutter/material.dart';
+import 'app_state.dart';
+
+class AppScope extends InheritedWidget {
+  final AppState state;
+
+  const AppScope({
+    super.key,
+    required this.state,
+    required super.child,
+  });
+
+  static AppState of(BuildContext context) {
+    final scope =
+        context.dependOnInheritedWidgetOfExactType<AppScope>();
+    assert(scope != null, 'No AppScope found in context');
+    return scope!.state;
+  }
+
+  @override
+  bool updateShouldNotify(AppScope oldWidget) => true;
+}
